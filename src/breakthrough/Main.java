@@ -11,9 +11,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        int boardSize = Integer.parseInt(JOptionPane.showInputDialog("Enter board size (6, 8, or 10):"));
         SwingUtilities.invokeLater(() -> {
-            BreakthroughGameGUI gameGUI = new BreakthroughGameGUI(boardSize);
+            BreakthroughGameGUI gameGUI = new BreakthroughGameGUI();
             gameGUI.setVisible(true);
         });    
     }      

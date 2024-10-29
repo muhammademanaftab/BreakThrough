@@ -2,17 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author Muhammad Eman Aftab
  */
-
 package breakthrough;
 
-public class Doll {
+public abstract class Doll {
     protected Position position;
-    protected boolean isCaptured; 
+    protected boolean isCaptured;
 
     public Doll(Position position) {
         this.position = position;
@@ -25,17 +23,12 @@ public class Doll {
 
     public void setPosition(Position newPosition) {
         this.position = newPosition;
-    }
-
-    public void capture() {
-        this.isCaptured = true;
-    }
+    }   
 
     public boolean isCaptured() {
         return isCaptured;
     }
 
-    public boolean canMove(Position newPosition) {
-        return !isCaptured; 
-    }
+    protected abstract boolean canCapture(Position opponentPosition);
+    protected abstract boolean canMove(Position newPosition);
 }

@@ -6,8 +6,6 @@ package breakthrough;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class BreakthroughGameGUI extends JFrame {
 
@@ -18,126 +16,129 @@ public class BreakthroughGameGUI extends JFrame {
     private JLabel statusLabel;
     private Position selectedPosition = null;
 
-    public BreakthroughGameGUI(int size) {
-        this.boardSize = size;
-        this.board = new Board(size);
-        this.boardButtons = new JButton[size][size];
+    public BreakthroughGameGUI() {
+        boardSize = getBoardSize();
+        if (boardSize != -1) {
+            setupGame();
+        } else {
+            System.exit(0);
+        }
+    }
 
+    private int getBoardSize() {
+        while (true) {
+            String input = JOptionPane.showInputDialog(this, "Enter board size (6, 8, or 10):", "Board Size", JOptionPane.QUESTION_MESSAGE);
+            if (input == null) {
+                JOptionPane.showMessageDialog(this, "Exiting the game.", "Exit", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
+            }
+            try {
+                int size = Integer.parseInt(input);
+                if (size == 6 || size == 8 || size == 10) {
+                    return size;
+                } else {
+                    JOptionPane.showMessageDialog(this, "Please enter 6, 8, or 10.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid input. Please enter a number.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void setupGame() {
+        board = new Board(boardSize);
+        boardButtons = new JButton[boardSize][boardSize];
         setTitle("Breakthrough Game");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Create and add the game board
-        JPanel boardPanel = new JPanel();
-        boardPanel.setLayout(new GridLayout(size, size));
-        initializeBoard(boardPanel);
+        JPanel boardPanel = new JPanel(new GridLayout(boardSize, boardSize));
+        setupBoard(boardPanel);
 
-        // Status label to show player turns and messages
         statusLabel = new JLabel("Player 1's turn", SwingConstants.CENTER);
         add(statusLabel, BorderLayout.NORTH);
         add(boardPanel, BorderLayout.CENTER);
     }
 
-    private void initializeBoard(JPanel boardPanel) {
+    private void setupBoard(JPanel boardPanel) {
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
                 JButton cellButton = new JButton();
                 cellButton.setFont(new Font("Arial", Font.PLAIN, 20));
-                cellButton.addActionListener(new CellClickListener(row, col));
+                cellButton.addActionListener(new CellClickListener(row, col, board, this));
                 boardButtons[row][col] = cellButton;
                 boardPanel.add(cellButton);
 
-                // Place player pawns visually based on initial setup
-                if (board.board[row][col] instanceof Pawn) {
-                    Pawn pawn = (Pawn) board.board[row][col];
-                    cellButton.setText(pawn.isPlayerOne ? "P1" : "P2");
+                if (board.getBoard()[row][col] instanceof Pawn) {
+                    Pawn pawn = (Pawn) board.getBoard()[row][col];
+                    if (pawn.isPlayerOne) {
+                        cellButton.setBackground(Color.RED);
+                        cellButton.setForeground(Color.WHITE);
+                        cellButton.setText("P1");
+                    } else {
+                        cellButton.setBackground(Color.BLUE);
+                        cellButton.setForeground(Color.BLACK);
+                        cellButton.setText("P2");
+                    }
+                } else {
+                    cellButton.setBackground(Color.LIGHT_GRAY);
                 }
             }
         }
     }
 
-    private void updateBoardDisplay() {
+    public void updateBoardDisplay() {
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
-                if (board.board[row][col] instanceof Pawn) {
-                    Pawn pawn = (Pawn) board.board[row][col];
+                if (board.getBoard()[row][col] instanceof Pawn) {
+                    Pawn pawn = (Pawn) board.getBoard()[row][col];
+                    boardButtons[row][col].setBackground(pawn.isPlayerOne ? Color.RED : Color.BLUE);
+                    boardButtons[row][col].setForeground(pawn.isPlayerOne ? Color.WHITE : Color.BLACK);
                     boardButtons[row][col].setText(pawn.isPlayerOne ? "P1" : "P2");
                 } else {
+                    boardButtons[row][col].setBackground(Color.LIGHT_GRAY);
                     boardButtons[row][col].setText("");
                 }
             }
         }
     }
 
-    private void toggleTurn() {
+    public void toggleTurn() {
         isPlayerOneTurn = !isPlayerOneTurn;
         statusLabel.setText("Player " + (isPlayerOneTurn ? "1" : "2") + "'s turn");
     }
 
-    private void showWinMessage(int winningPlayer) {
-        int choice = JOptionPane.showConfirmDialog(
-                this, "Player " + winningPlayer + " wins! Would you like to play again?", "Game Over",
-                JOptionPane.YES_NO_OPTION
-        );
-
+    public void showWinMessage(int winningPlayer) {
+        int choice = JOptionPane.showConfirmDialog(this, "Player " + winningPlayer + " wins! Play again?", "Game Over", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             resetGame();
         } else {
-            dispose(); 
+            dispose();
         }
     }
 
     private void resetGame() {
-        // Reset the board to the initial state
         board = new Board(boardSize);
         isPlayerOneTurn = true;
         selectedPosition = null;
         statusLabel.setText("Player 1's turn");
-        updateBoardDisplay(); // Refresh the GUI to reflect the reset state
+        updateBoardDisplay();
     }
 
-    private class CellClickListener implements ActionListener {
+    public JLabel getStatusLabel() {
+        return statusLabel;
+    }
 
-        private int row;
-        private int col;
+    public Position getSelectedPosition() {
+        return selectedPosition;
+    }
 
-        public CellClickListener(int row, int col) {
-            this.row = row;
-            this.col = col;
-        }
+    public void setSelectedPosition(Position selectedPosition) {
+        this.selectedPosition = selectedPosition;
+    }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedPosition == null) {
-                // Select a pawn
-                Doll selectedDoll = board.board[row][col];
-                if (selectedDoll instanceof Pawn && ((Pawn) selectedDoll).isPlayerOne == isPlayerOneTurn) {
-                    selectedPosition = new Position(row, col);
-                    statusLabel.setText("Select a destination for Player " + (isPlayerOneTurn ? "1" : "2"));
-                }
-            } else {
-                // Move the pawn
-                Position newPosition = new Position(row, col);
-                Doll selectedDoll = board.board[selectedPosition.getRow()][selectedPosition.getColumn()];
-
-                if (selectedDoll instanceof Pawn) {
-                    Pawn selectedPawn = (Pawn) selectedDoll;
-                    if (board.movePawn(selectedPawn, newPosition)) {
-                        updateBoardDisplay();
-
-                        // Check for win
-                        if (board.checkWin(selectedPawn)) {
-                            showWinMessage(isPlayerOneTurn ? 1 : 2);
-                        } else {
-                            toggleTurn();
-                        }
-                    } else {
-                        statusLabel.setText("Invalid move. Try again.");
-                    }
-                }
-                selectedPosition = null; // Reset selection
-            }
-        }
+    public boolean isPlayerOneTurn() {
+        return isPlayerOneTurn;
     }
 }

@@ -13,7 +13,10 @@ import java.util.ArrayList;
 public class Board {
 
     private int size;
-    public Doll[][] board;
+    private Doll[][] board;
+    public Doll[][] getBoard() {
+        return this.board;
+    }
 
     public Board(int size) {
         this.size = size;
@@ -33,7 +36,7 @@ public class Board {
         }
     }
 
-    public boolean isMoveValid(Pawn pawn, Position newPosition) {
+    private boolean isMoveValid(Pawn pawn, Position newPosition) {
         return newPosition.getRow() >= 0 && newPosition.getRow() < size
                 && newPosition.getColumn() >= 0 && newPosition.getColumn() < size
                 && pawn.canMove(newPosition);

@@ -7,10 +7,10 @@
  *
  * @author Muhammad Eman Aftab
  */
-
 package breakthrough;
+
 public class Pawn extends Doll {
-    public boolean isPlayerOne; 
+    public boolean isPlayerOne;
 
     public Pawn(Position position, boolean isPlayerOne) {
         super(position);
@@ -19,20 +19,19 @@ public class Pawn extends Doll {
 
     @Override
     public boolean canMove(Position newPosition) {
-        if (isCaptured) return false; 
+        if (isCaptured) return false;
 
         int rowDiff = newPosition.getRow() - position.getRow();
-//        new position is the position where pawn going and position.getrow is old posiiton of the pawn
-//        player one moves from row one to two if row difference is equal one then it goes forward
         int colDiff = Math.abs(newPosition.getColumn() - position.getColumn());
 
         if (isPlayerOne) {
-            return (rowDiff == 1 && colDiff <= 1); //col diff == 0 mean same col or 1 mean 1 step ahead
+            return (rowDiff == 1 && colDiff <= 1);
         } else {
-            return (rowDiff == -1 && colDiff <= 1); //for player two rowdiff is -1 bcz array is moving form high index to low index
+            return (rowDiff == -1 && colDiff <= 1);
         }
     }
 
+    @Override
     public boolean canCapture(Position opponentPosition) {
         if (isCaptured) return false;
 
@@ -40,9 +39,9 @@ public class Pawn extends Doll {
         int colDiff = Math.abs(opponentPosition.getColumn() - position.getColumn());
 
         if (isPlayerOne) {
-            return (rowDiff == 1 && colDiff == 1); // for playerone
+            return (rowDiff == 1 && colDiff == 1);
         } else {
-            return (rowDiff == -1 && colDiff == 1); // for player two
+            return (rowDiff == -1 && colDiff == 1);
         }
     }
 }
