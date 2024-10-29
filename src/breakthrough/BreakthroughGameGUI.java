@@ -15,8 +15,12 @@ public class BreakthroughGameGUI extends JFrame {
     private boolean isPlayerOneTurn = true;
     private JLabel statusLabel;
     private Position selectedPosition = null;
+    private String playerOneName;
+    private String playerTwoName;
 
     public BreakthroughGameGUI() {
+        showGameRules(); // Show rules dialog first
+        getPlayerNames();
         boardSize = getBoardSize();
         if (boardSize != -1) {
             setupGame();
@@ -24,24 +28,88 @@ public class BreakthroughGameGUI extends JFrame {
             System.exit(0);
         }
     }
+private void showGameRules() {
+    // Create a custom panel
+    JPanel panel = new JPanel(new BorderLayout(10, 10));
+    
+    // Add the icon
+    JLabel iconLabel = new JLabel(UIManager.getIcon("OptionPane.informationIcon"));
+    panel.add(iconLabel, BorderLayout.WEST);
+
+    // Add the text content as a paragraph
+    JLabel textLabel = new JLabel("<html><body width='500'><h2>About Breakthrough Game</h2>"
+                                  + "<p>Breakthrough is a two-player game, played on a board consisting of n x n fields. "
+                                  + "Each player has 2n dolls in two rows, placed initially on the player’s side (similarly to the chess game, "
+                                  + "but here, all dolls of a player look the same). A player can move their doll one step forward or one step "
+                                  + "diagonally forward (no backward moves allowed). A player can capture an opponent's doll by moving diagonally "
+                                  + "forward onto it. The game is won when a player's doll reaches the opposite edge of the board.</p>"
+                                  + "<p>The board size is selectable (6x6, 8x8, or 10x10). The game should recognize when it has ended, and it "
+                                  + "must display which player won in a message box. After this, a new game should start automatically.</p>"
+                                  + "</body></html>");
+    panel.add(textLabel, BorderLayout.CENTER);
+
+    // Show the dialog with the custom panel
+    int option = JOptionPane.showOptionDialog(
+        this,
+        panel,
+        "Game Rules",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.PLAIN_MESSAGE,  // Set to PLAIN_MESSAGE to avoid the default icon
+        null,
+        new String[]{"Next"},
+        "Next"
+    );
+
+    if (option == JOptionPane.CLOSED_OPTION) {
+        System.exit(0); // Exit if the user closes the dialog
+    }
+}
+
+    private void getPlayerNames() {
+    playerOneName = JOptionPane.showInputDialog(this, "Enter name for Player 1:", "Player Name", JOptionPane.QUESTION_MESSAGE);
+    if (playerOneName == null) {
+        System.exit(0); // Exit if user presses "Cancel" or closes the dialog
+    } else if (playerOneName.trim().isEmpty()) {
+        playerOneName = "P1"; // Default to "P1" if input is blank
+    }
+
+    playerTwoName = JOptionPane.showInputDialog(this, "Enter name for Player 2:", "Player Name", JOptionPane.QUESTION_MESSAGE);
+    if (playerTwoName == null) {
+        System.exit(0); // Exit if user presses "Cancel" or closes the dialog
+    } else if (playerTwoName.trim().isEmpty()) {
+        playerTwoName = "P2"; // Default to "P2" if input is blank
+    }
+}
+
+
 
     private int getBoardSize() {
-        while (true) {
-            String input = JOptionPane.showInputDialog(this, "Enter board size (6, 8, or 10):", "Board Size", JOptionPane.QUESTION_MESSAGE);
-            if (input == null) {
-                JOptionPane.showMessageDialog(this, "Exiting the game.", "Exit", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
-            }
-            try {
-                int size = Integer.parseInt(input);
-                if (size == 6 || size == 8 || size == 10) {
-                    return size;
-                } else {
-                    JOptionPane.showMessageDialog(this, "Please enter 6, 8, or 10.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Invalid input. Please enter a number.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        String[] options = {"6x6", "8x8", "10x10"};
+        int choice = JOptionPane.showOptionDialog(
+            this,
+            "Choose Difficulty Level",
+            "Board Size",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]
+        );
+
+        if (choice == JOptionPane.CLOSED_OPTION) {
+            JOptionPane.showMessageDialog(this, "Exiting the game.", "Exit", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
+        }
+
+        switch (choice) {
+            case 0:
+                return 6; // 6x6
+            case 1:
+                return 8; // 8x8
+            case 2:
+                return 10; // 10x10
+            default:
+                return -1; // Exit or unexpected case
         }
     }
 
@@ -56,7 +124,7 @@ public class BreakthroughGameGUI extends JFrame {
         JPanel boardPanel = new JPanel(new GridLayout(boardSize, boardSize));
         setupBoard(boardPanel);
 
-        statusLabel = new JLabel("Player 1's turn", SwingConstants.CENTER);
+        statusLabel = new JLabel(playerOneName + "'s turn", SwingConstants.CENTER);
         add(statusLabel, BorderLayout.NORTH);
         add(boardPanel, BorderLayout.CENTER);
     }
@@ -65,7 +133,7 @@ public class BreakthroughGameGUI extends JFrame {
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
                 JButton cellButton = new JButton();
-                cellButton.setFont(new Font("Arial", Font.PLAIN, 20));
+                cellButton.setFont(new Font("Arial", Font.PLAIN, 12)); // Adjust font size if needed
                 cellButton.addActionListener(new CellClickListener(row, col, board, this));
                 boardButtons[row][col] = cellButton;
                 boardPanel.add(cellButton);
@@ -75,11 +143,11 @@ public class BreakthroughGameGUI extends JFrame {
                     if (pawn.isPlayerOne) {
                         cellButton.setBackground(Color.RED);
                         cellButton.setForeground(Color.WHITE);
-                        cellButton.setText("P1");
+                        cellButton.setText(playerOneName); // Display Player 1's name
                     } else {
                         cellButton.setBackground(Color.BLUE);
                         cellButton.setForeground(Color.BLACK);
-                        cellButton.setText("P2");
+                        cellButton.setText(playerTwoName); // Display Player 2's name
                     }
                 } else {
                     cellButton.setBackground(Color.LIGHT_GRAY);
@@ -95,7 +163,7 @@ public class BreakthroughGameGUI extends JFrame {
                     Pawn pawn = (Pawn) board.getBoard()[row][col];
                     boardButtons[row][col].setBackground(pawn.isPlayerOne ? Color.RED : Color.BLUE);
                     boardButtons[row][col].setForeground(pawn.isPlayerOne ? Color.WHITE : Color.BLACK);
-                    boardButtons[row][col].setText(pawn.isPlayerOne ? "P1" : "P2");
+                    boardButtons[row][col].setText(pawn.isPlayerOne ? playerOneName : playerTwoName); // Show player name
                 } else {
                     boardButtons[row][col].setBackground(Color.LIGHT_GRAY);
                     boardButtons[row][col].setText("");
@@ -106,11 +174,12 @@ public class BreakthroughGameGUI extends JFrame {
 
     public void toggleTurn() {
         isPlayerOneTurn = !isPlayerOneTurn;
-        statusLabel.setText("Player " + (isPlayerOneTurn ? "1" : "2") + "'s turn");
+        statusLabel.setText((isPlayerOneTurn ? playerOneName : playerTwoName) + "'s turn");
     }
 
     public void showWinMessage(int winningPlayer) {
-        int choice = JOptionPane.showConfirmDialog(this, "Player " + winningPlayer + " wins! Play again?", "Game Over", JOptionPane.YES_NO_OPTION);
+        String winner = (winningPlayer == 1) ? playerOneName : playerTwoName;
+        int choice = JOptionPane.showConfirmDialog(this, winner + " wins! Play again?", "Game Over", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             resetGame();
         } else {
@@ -122,7 +191,7 @@ public class BreakthroughGameGUI extends JFrame {
         board = new Board(boardSize);
         isPlayerOneTurn = true;
         selectedPosition = null;
-        statusLabel.setText("Player 1's turn");
+        statusLabel.setText(playerOneName + "'s turn");
         updateBoardDisplay();
     }
 
