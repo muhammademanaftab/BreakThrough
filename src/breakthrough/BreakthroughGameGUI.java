@@ -20,18 +20,17 @@ public class BreakthroughGameGUI extends JFrame {
     private GameMenuBar menuBar;
 
     public BreakthroughGameGUI() {
-        initializeGame(); // Start the game with the initial setup
+        initializeGame();
     }
 
-    // Initializes the game with player names and board size selection
     private void initializeGame() {
-        showGameRules(); // Show game rules at the start
-        getPlayerNames(); // Get player names
-        boardSize = getBoardSize(); // Select board size
+        showGameRules();
+        getPlayerNames();
+        boardSize = getBoardSize();
         if (boardSize != -1) {
-            setupGame(); // Set up the game board and components
+            setupGame();
         } else {
-            System.exit(0); // Exit if setup is not completed
+            System.exit(0);
         }
     }
 
@@ -40,7 +39,7 @@ public class BreakthroughGameGUI extends JFrame {
         JLabel iconLabel = new JLabel(UIManager.getIcon("OptionPane.informationIcon"));
         panel.add(iconLabel, BorderLayout.WEST);
 
-        JLabel textLabel = new JLabel("<html><body width='300'><h2>Breakthrough Game Rules</h2>"
+        JLabel textLabel = new JLabel("<html><body width='500'><h2>Breakthrough Game Rules</h2>"
                 + "<p>Breakthrough is a two-player game, played on a board consisting of n x n fields. "
                 + "Each player has 2n dolls in two rows, placed initially on the player’s side (similarly to the chess game, "
                 + "but here, all dolls of a player look the same). A player can move their doll one step forward or one step "
@@ -63,23 +62,23 @@ public class BreakthroughGameGUI extends JFrame {
         );
 
         if (option == JOptionPane.CLOSED_OPTION) {
-            System.exit(0); // Exit if the user closes the dialog
+            System.exit(0);
         }
     }
 
     private void getPlayerNames() {
         playerOneName = JOptionPane.showInputDialog(this, "Enter name for Player 1:", "Player Name", JOptionPane.QUESTION_MESSAGE);
         if (playerOneName == null) {
-            System.exit(0); // Exit if user presses "Cancel" or closes the dialog
+            System.exit(0);
         } else if (playerOneName.trim().isEmpty()) {
-            playerOneName = "P1"; // Default to "P1" if input is blank
+            playerOneName = "P1";
         }
 
         playerTwoName = JOptionPane.showInputDialog(this, "Enter name for Player 2:", "Player Name", JOptionPane.QUESTION_MESSAGE);
         if (playerTwoName == null) {
-            System.exit(0); // Exit if user presses "Cancel" or closes the dialog
+            System.exit(0);
         } else if (playerTwoName.trim().isEmpty()) {
-            playerTwoName = "P2"; // Default to "P2" if input is blank
+            playerTwoName = "P2";
         }
     }
 
@@ -103,13 +102,13 @@ public class BreakthroughGameGUI extends JFrame {
 
         switch (choice) {
             case 0:
-                return 6; // 6x6
+                return 6;
             case 1:
-                return 8; // 8x8
+                return 8;
             case 2:
-                return 10; // 10x10
+                return 10;
             default:
-                return -1; // Exit or unexpected case
+                return -1;
         }
     }
 
@@ -124,10 +123,9 @@ public class BreakthroughGameGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Use the new GameMenuBar class for menu
         menuBar = new GameMenuBar(this);
         setJMenuBar(menuBar);
-        menuBar.updateDifficultySelection(boardSize); // Set the correct difficulty radio button
+        menuBar.updateDifficultySelection(boardSize);
 
         JPanel boardPanel = new JPanel(new GridLayout(boardSize, boardSize));
         setupBoard(boardPanel);
@@ -168,7 +166,7 @@ public class BreakthroughGameGUI extends JFrame {
     public void changeDifficulty(int size) {
         boardSize = size;
         setupGame();
-        menuBar.updateDifficultySelection(boardSize); // Update the selection on the menu bar
+        menuBar.updateDifficultySelection(boardSize);
     }
 
     public void showWinMessage(int winningPlayer) {
@@ -217,5 +215,4 @@ public class BreakthroughGameGUI extends JFrame {
             }
         }
     }
-    
 }
