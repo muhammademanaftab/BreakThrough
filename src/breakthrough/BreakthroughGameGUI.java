@@ -6,7 +6,6 @@ package breakthrough;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class BreakthroughGameGUI extends JFrame {
 
@@ -18,6 +17,7 @@ public class BreakthroughGameGUI extends JFrame {
     private Position selectedPosition = null;
     private String playerOneName;
     private String playerTwoName;
+    private GameMenuBar menuBar;
 
     public BreakthroughGameGUI() {
         initializeGame(); // Start the game with the initial setup
@@ -83,7 +83,7 @@ public class BreakthroughGameGUI extends JFrame {
         }
     }
 
-    private int getBoardSize() {
+    public int getBoardSize() {
         String[] options = {"6x6", "8x8", "10x10"};
         int choice = JOptionPane.showOptionDialog(
                 this,
@@ -114,39 +114,25 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     private void setupGame() {
-        // Set up the main game board and components
         board = new Board(boardSize);
         boardButtons = new JButton[boardSize][boardSize];
         isPlayerOneTurn = true;
 
-        getContentPane().removeAll(); // Clear old components
+        getContentPane().removeAll();
         setTitle("Breakthrough Game");
         setSize(600, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Top panel with Restart and Change Difficulty buttons
-        // Top panel with Restart and Change Difficulty buttons
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Align buttons to the left
+        // Use the new GameMenuBar class for menu
+        menuBar = new GameMenuBar(this);
+        setJMenuBar(menuBar);
+        menuBar.updateDifficultySelection(boardSize); // Set the correct difficulty radio button
 
-// Restart button
-        JButton restartButton = new JButton("Restart");
-        restartButton.addActionListener(e -> restartGame());
-        topPanel.add(restartButton);
-
-// Change Difficulty button
-        JButton changeDifficultyButton = new JButton("Change Difficulty");
-        changeDifficultyButton.addActionListener(e -> showDifficultyDialog());
-        topPanel.add(changeDifficultyButton);
-
-        add(topPanel, BorderLayout.NORTH);
-
-        // Board panel for game grid
         JPanel boardPanel = new JPanel(new GridLayout(boardSize, boardSize));
-        setupBoard(boardPanel); // Populate the board panel with game buttons
+        setupBoard(boardPanel);
         add(boardPanel, BorderLayout.CENTER);
 
-        // Status label to show whose turn it is
         statusLabel = new JLabel(playerOneName + "'s turn", SwingConstants.CENTER);
         add(statusLabel, BorderLayout.SOUTH);
 
@@ -163,18 +149,11 @@ public class BreakthroughGameGUI extends JFrame {
                 boardButtons[row][col] = cellButton;
                 boardPanel.add(cellButton);
 
-                // Update button display for Pawns
                 if (board.getBoard()[row][col] instanceof Pawn) {
                     Pawn pawn = (Pawn) board.getBoard()[row][col];
-                    if (pawn.isPlayerOne) {
-                        cellButton.setBackground(Color.RED);
-                        cellButton.setForeground(Color.WHITE);
-                        cellButton.setText(playerOneName);
-                    } else {
-                        cellButton.setBackground(Color.BLUE);
-                        cellButton.setForeground(Color.BLACK);
-                        cellButton.setText(playerTwoName);
-                    }
+                    cellButton.setBackground(pawn.isPlayerOne ? Color.RED : Color.BLUE);
+                    cellButton.setForeground(pawn.isPlayerOne ? Color.WHITE : Color.BLACK);
+                    cellButton.setText(pawn.isPlayerOne ? playerOneName : playerTwoName);
                 } else {
                     cellButton.setBackground(Color.LIGHT_GRAY);
                 }
@@ -182,46 +161,14 @@ public class BreakthroughGameGUI extends JFrame {
         }
     }
 
-    private void restartGame() {
-        initializeGame();// Start a new game instance
+    public void restartGame() {
+        initializeGame();
     }
 
-    private void showDifficultyDialog() {
-        JDialog difficultyDialog = new JDialog(this, "Choose Difficulty Level", true);
-        difficultyDialog.setLayout(new FlowLayout());
-        difficultyDialog.setSize(400, 100);
-
-        JLabel instructionLabel = new JLabel("Select new board size:");
-        difficultyDialog.add(instructionLabel);
-
-        JButton size6x6 = new JButton("6x6");
-        JButton size8x8 = new JButton("8x8");
-        JButton size10x10 = new JButton("10x10");
-
-        size6x6.addActionListener(e -> {
-            boardSize = 6;
-            difficultyDialog.dispose();
-            setupGame(); // Reinitialize with new size
-        });
-
-        size8x8.addActionListener(e -> {
-            boardSize = 8;
-            difficultyDialog.dispose();
-            setupGame(); // Reinitialize with new size
-        });
-
-        size10x10.addActionListener(e -> {
-            boardSize = 10;
-            difficultyDialog.dispose();
-            setupGame(); // Reinitialize with new size
-        });
-
-        difficultyDialog.add(size6x6);
-        difficultyDialog.add(size8x8);
-        difficultyDialog.add(size10x10);
-        difficultyDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        difficultyDialog.setLocationRelativeTo(this);
-        difficultyDialog.setVisible(true);
+    public void changeDifficulty(int size) {
+        boardSize = size;
+        setupGame();
+        menuBar.updateDifficultySelection(boardSize); // Update the selection on the menu bar
     }
 
     public void showWinMessage(int winningPlayer) {
@@ -270,4 +217,5 @@ public class BreakthroughGameGUI extends JFrame {
             }
         }
     }
+    
 }
