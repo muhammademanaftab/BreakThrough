@@ -1,6 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+/**
+ * The BreakthroughGameGUI class is the main graphical user interface for the Breakthrough game.
+ * It handles the game's setup, display, user interaction, and overall game flow.
+ * Players can see the game board, select moves, and get feedback through this GUI.
  */
 package breakthrough;
 
@@ -9,20 +10,27 @@ import java.awt.*;
 
 public class BreakthroughGameGUI extends JFrame {
 
-    private int boardSize;
-    private JButton[][] boardButtons;
-    private Board board;
-    private boolean isPlayerOneTurn = true;
-    private JLabel statusLabel;
-    private Position selectedPosition = null;
-    private String playerOneName;
-    private String playerTwoName;
-    private GameMenuBar menuBar;
+    private int boardSize; // Size of the board (e.g., 6x6, 8x8, 10x10).
+    private JButton[][] boardButtons; // Buttons representing each cell on the board.
+    private Board board; // The game board object that handles game logic.
+    private boolean isPlayerOneTurn = true; // Tracks whose turn it is (Player 1 starts first).
+    private JLabel statusLabel; // Displays the current game status (e.g., whose turn it is).
+    private Position selectedPosition = null; // The currently selected position on the board.
+    private String playerOneName; // Name of Player 1.
+    private String playerTwoName; // Name of Player 2.
+    private GameMenuBar menuBar; // Menu bar for game options.
 
+    /**
+     * Constructs the game GUI and initializes the game setup.
+     */
     public BreakthroughGameGUI() {
         initializeGame();
     }
 
+    /**
+     * Initializes the game by showing rules, getting player names,
+     * selecting board size, and setting up the game board.
+     */
     private void initializeGame() {
         showGameRules();
         getPlayerNames();
@@ -34,19 +42,21 @@ public class BreakthroughGameGUI extends JFrame {
         }
     }
 
+    /**
+     * Displays the game rules in a dialog box to explain how the game works.
+     */
     private void showGameRules() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         JLabel iconLabel = new JLabel(UIManager.getIcon("OptionPane.informationIcon"));
         panel.add(iconLabel, BorderLayout.WEST);
 
         JLabel textLabel = new JLabel("<html><body width='500'><h2>Breakthrough Game Rules</h2>"
-                + "<p>Breakthrough is a two-player game, played on a board consisting of n x n fields. "
-                + "Each player has 2n dolls in two rows, placed initially on the player’s side (similarly to the chess game, "
-                + "but here, all dolls of a player look the same). A player can move their doll one step forward or one step "
-                + "diagonally forward (no backward moves allowed). A player can capture an opponent's doll by moving diagonally "
-                + "forward onto it. The game is won when a player's doll reaches the opposite edge of the board.</p>"
-                + "<p>The board size is selectable (6x6, 8x8, or 10x10). The game should recognize when it has ended, and it "
-                + "must display which player won in a message box. After this, a new game should start automatically.</p>"
+                + "<p>Breakthrough is a two-player strategy game played on an n x n board. "
+                + "Each player has pawns that can move one step forward or diagonally forward. "
+                + "Pawns can capture opponents by moving diagonally forward onto them. "
+                + "The game ends when a pawn reaches the opponent's side.</p>"
+                + "<p>You can select the board size (6x6, 8x8, or 10x10) before starting. "
+                + "After the game ends, a winner will be announced, and you can choose to start a new game.</p>"
                 + "</body></html>");
         panel.add(textLabel, BorderLayout.CENTER);
 
@@ -66,6 +76,9 @@ public class BreakthroughGameGUI extends JFrame {
         }
     }
 
+    /**
+     * Prompts the players to enter their names. Default names are assigned if input is empty.
+     */
     private void getPlayerNames() {
         playerOneName = JOptionPane.showInputDialog(this, "Enter name for Player 1:", "Player Name", JOptionPane.QUESTION_MESSAGE);
         if (playerOneName == null) {
@@ -82,6 +95,11 @@ public class BreakthroughGameGUI extends JFrame {
         }
     }
 
+    /**
+     * Displays a dialog box for selecting the board size and returns the selected size.
+     * 
+     * @return The board size (6, 8, or 10), or -1 if the user cancels.
+     */
     public int getBoardSize() {
         String[] options = {"6x6", "8x8", "10x10"};
         int choice = JOptionPane.showOptionDialog(
@@ -112,6 +130,9 @@ public class BreakthroughGameGUI extends JFrame {
         }
     }
 
+    /**
+     * Sets up the game board, GUI components, and the initial game state.
+     */
     private void setupGame() {
         board = new Board(boardSize);
         boardButtons = new JButton[boardSize][boardSize];
@@ -138,6 +159,11 @@ public class BreakthroughGameGUI extends JFrame {
         repaint();
     }
 
+    /**
+     * Configures the board panel by adding buttons for each cell and setting initial pawn states.
+     * 
+     * @param boardPanel The panel to configure.
+     */
     private void setupBoard(JPanel boardPanel) {
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
@@ -159,47 +185,47 @@ public class BreakthroughGameGUI extends JFrame {
         }
     }
 
+    /**
+     * Restarts the game by reinitializing all components and starting fresh.
+     */
     public void restartGame() {
+        getContentPane().removeAll();
+        setJMenuBar(null);
         initializeGame();
     }
 
+    /**
+     * Changes the board size and resets the game with the new size.
+     * 
+     * @param size The new board size.
+     */
     public void changeDifficulty(int size) {
         boardSize = size;
         setupGame();
         menuBar.updateDifficultySelection(boardSize);
     }
 
+    /**
+     * Displays a message indicating the winner and offers the option to start a new game.
+     * 
+     * @param winningPlayer The player number (1 or 2) who won.
+     */
     public void showWinMessage(int winningPlayer) {
         String winner = (winningPlayer == 1) ? playerOneName : playerTwoName;
         int choice = JOptionPane.showConfirmDialog(this, winner + " wins! Play again?", "Game Over", JOptionPane.YES_NO_OPTION);
+
         if (choice == JOptionPane.YES_OPTION) {
-            restartGame();
+            dispose();
+            BreakthroughGameGUI newGame = new BreakthroughGameGUI();
+            newGame.setVisible(true);
         } else {
             dispose();
         }
     }
 
-    public JLabel getStatusLabel() {
-        return statusLabel;
-    }
-
-    public Position getSelectedPosition() {
-        return selectedPosition;
-    }
-
-    public void setSelectedPosition(Position selectedPosition) {
-        this.selectedPosition = selectedPosition;
-    }
-
-    public boolean isPlayerOneTurn() {
-        return isPlayerOneTurn;
-    }
-
-    public void toggleTurn() {
-        isPlayerOneTurn = !isPlayerOneTurn;
-        statusLabel.setText((isPlayerOneTurn ? playerOneName : playerTwoName) + "'s turn");
-    }
-
+    /**
+     * Updates the game board's display to reflect the current game state.
+     */
     public void updateBoardDisplay() {
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
@@ -214,5 +240,30 @@ public class BreakthroughGameGUI extends JFrame {
                 }
             }
         }
+    }
+
+    /**
+     * Toggles the turn between Player 1 and Player 2.
+     */
+    public void toggleTurn() {
+        isPlayerOneTurn = !isPlayerOneTurn;
+        statusLabel.setText((isPlayerOneTurn ? playerOneName : playerTwoName) + "'s turn");
+    }
+
+    // Getter and Setter methods for status label and selected position.
+    public JLabel getStatusLabel() {
+        return statusLabel;
+    }
+
+    public Position getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    public void setSelectedPosition(Position selectedPosition) {
+        this.selectedPosition = selectedPosition;
+    }
+
+    public boolean isPlayerOneTurn() {
+        return isPlayerOneTurn;
     }
 }

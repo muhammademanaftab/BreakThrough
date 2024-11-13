@@ -1,22 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+/**
+ * The GameMenuBar class represents the menu bar in the Breakthrough game GUI.
+ * It provides options for restarting the game, exiting the application, 
+ * and changing the game board's difficulty level.
+ * 
+ * This class interacts with the main game GUI (`BreakthroughGameGUI`) to apply user actions.
  */
 package breakthrough;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class GameMenuBar extends JMenuBar {
 
-    private final JMenuItem restartItem;
-    private final JMenuItem exitItem;
-    private final JRadioButtonMenuItem size6x6;
-    private final JRadioButtonMenuItem size8x8;
-    private final JRadioButtonMenuItem size10x10;
-    private final BreakthroughGameGUI gameGUI;
+    private final JMenuItem restartItem; // Menu item for restarting the game.
+    private final JMenuItem exitItem; // Menu item for exiting the game.
+    private final JRadioButtonMenuItem size6x6; // Radio button for selecting 6x6 board size.
+    private final JRadioButtonMenuItem size8x8; // Radio button for selecting 8x8 board size.
+    private final JRadioButtonMenuItem size10x10; // Radio button for selecting 10x10 board size.
+    private final BreakthroughGameGUI gameGUI; // Reference to the main game GUI.
 
+    /**
+     * Creates the menu bar with game options such as restart, exit, and difficulty level.
+     * 
+     * @param gameGUI The main game GUI to interact with for applying menu actions.
+     */
     public GameMenuBar(BreakthroughGameGUI gameGUI) {
         this.gameGUI = gameGUI;
         
@@ -51,10 +57,16 @@ public class GameMenuBar extends JMenuBar {
         difficultyGroup.add(size10x10);
         difficultyMenu.add(size10x10);
 
+        // Add menus to the menu bar
         add(gameMenu);
         add(difficultyMenu);
     }
 
+    /**
+     * Prompts the user to confirm the board size change and applies the new size if confirmed.
+     * 
+     * @param newSize The new board size selected by the user (6, 8, or 10).
+     */
     private void promptChangeDifficulty(int newSize) {
         int result = JOptionPane.showConfirmDialog(
                 gameGUI,
@@ -66,12 +78,17 @@ public class GameMenuBar extends JMenuBar {
         if (result == JOptionPane.YES_OPTION) {
             gameGUI.changeDifficulty(newSize);
         } else {
-            updateDifficultySelection(gameGUI.getBoardSize()); // Reset the selection if canceled
+            updateDifficultySelection(gameGUI.getBoardSize()); // Reset the selection if canceled.
         }
     }
 
+    /**
+     * Updates the selection in the difficulty menu based on the current board size.
+     * 
+     * @param boardSize The current size of the game board.
+     */
     public void updateDifficultySelection(int boardSize) {
-        // Select the radio button based on the current board size
+        // Automatically select the appropriate radio button for the current board size.
         if (boardSize == 6) {
             size6x6.setSelected(true);
         } else if (boardSize == 8) {

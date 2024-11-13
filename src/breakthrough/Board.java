@@ -1,56 +1,83 @@
 package breakthrough;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 /**
- *
- * @author Muhammad Eman Aftab
+ * This class represents the game board for the Breakthrough game.
+ * It holds the grid of cells and manages the pawns placed on it.
+ * The board also handles the initialization, movements, and winning condition checks.
  */
-import java.util.ArrayList;
-
 public class Board {
 
-    private int size;
-    private Doll[][] board;
+    private int size; // The size of the board (number of rows and columns).
+    private Doll[][] board; // A 2D array representing the board with pawns.
+
+    /**
+     * Retrieves the current state of the board as a 2D array of Dolls.
+     *
+     * @return the board grid containing all pawns.
+     */
     public Doll[][] getBoard() {
         return this.board;
     }
 
+    /**
+     * Creates a new game board of the given size and initializes it.
+     * Pawns are placed in their starting positions for both players.
+     *
+     * @param size the size of the board (e.g., 8 for an 8x8 board).
+     */
     public Board(int size) {
         this.size = size;
         board = new Doll[size][size];
         initializeBoard();
     }
 
+    /**
+     * Places pawns for both players in their starting positions on the board.
+     * Player 1 pawns are placed at the top, and Player 2 pawns at the bottom.
+     */
     private void initializeBoard() {
         for (int col = 0; col < size; col++) {
-            board[0][col] = new Pawn(new Position(0, col), true);
-            board[1][col] = new Pawn(new Position(1, col), true);
+            board[0][col] = new Pawn(new Position(0, col), true); // Player 1's first row.
+            board[1][col] = new Pawn(new Position(1, col), true); // Player 1's second row.
         }
 
         for (int col = 0; col < size; col++) {
-            board[size - 1][col] = new Pawn(new Position(size - 1, col), false);
-            board[size - 2][col] = new Pawn(new Position(size - 2, col), false);
+            board[size - 1][col] = new Pawn(new Position(size - 1, col), false); // Player 2's first row.
+            board[size - 2][col] = new Pawn(new Position(size - 2, col), false); // Player 2's second row.
         }
     }
 
+    /**
+     * Checks if a pawn's move to a new position is valid.
+     * It ensures the new position is within the board's bounds and checks if the pawn's movement rules are followed.
+     *
+     * @param pawn        the pawn to be moved.
+     * @param newPosition the position where the pawn intends to move.
+     * @return true if the move is valid, false otherwise.
+     */
     private boolean isMoveValid(Pawn pawn, Position newPosition) {
         return newPosition.getRow() >= 0 && newPosition.getRow() < size
                 && newPosition.getColumn() >= 0 && newPosition.getColumn() < size
                 && pawn.canMove(newPosition);
     }
 
-    // Checkign if the move is within bounds and valid for the direction like can move in diagnol 
-//         and one step forward if there is no opponent pawn
-    // Checking if there is opponent pawn diagnolly and we can capture it
+    /**
+     * Attempts to move a pawn to a new position.
+     * The method checks if the move is valid and handles capturing opponent pawns if needed.
+     *
+     * @param pawn        the pawn to be moved.
+     * @param newPosition the position where the pawn should move.
+     * @return true if the move was successful, false if it was invalid.
+     */
     public boolean movePawn(Pawn pawn, Position newPosition) {
         if (isMoveValid(pawn, newPosition)) {
+            // If the target cell is empty, move the pawn.
             if (board[newPosition.getRow()][newPosition.getColumn()] == null) {
                 executeMove(pawn, newPosition);
                 return true;
-            } else if (board[newPosition.getRow()][newPosition.getColumn()] instanceof Pawn) {
+            }
+            // If the target cell has an opponent pawn, attempt to capture.
+            else if (board[newPosition.getRow()][newPosition.getColumn()] instanceof Pawn) {
                 Pawn targetPawn = (Pawn) board[newPosition.getRow()][newPosition.getColumn()];
                 if (pawn.canCapture(newPosition) && targetPawn.isPlayerOne != pawn.isPlayerOne) {
                     executeMove(pawn, newPosition);
@@ -61,21 +88,32 @@ public class Board {
         return false;
     }
 
+    /**
+     * Executes the move of a pawn to a new position by updating its position
+     * and updating the board grid.
+     *
+     * @param pawn        the pawn to be moved.
+     * @param newPosition the position where the pawn should move.
+     */
     private void executeMove(Pawn pawn, Position newPosition) {
-        board[pawn.getPosition().getRow()][pawn.getPosition().getColumn()] = null;
-        pawn.setPosition(newPosition);
-        board[newPosition.getRow()][newPosition.getColumn()] = pawn;
+        board[pawn.getPosition().getRow()][pawn.getPosition().getColumn()] = null; // Clear old position.
+        pawn.setPosition(newPosition); // Update pawn's position.
+        board[newPosition.getRow()][newPosition.getColumn()] = pawn; // Place pawn in new position.
     }
 
-    // making board visual, this is for console for debugging issues
+    /**
+     * Displays the board in the console for debugging purposes.
+     * Player 1's pawns are shown as "P1" and Player 2's pawns as "P2".
+     * Empty cells are displayed as "__".
+     */
     public void displayBoard() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 if (board[row][col] == null) {
                     System.out.print("__ ");
-                } else if (((Pawn) board[row][col]).isPlayerOne) { //type casting and changing it to pawn type
+                } else if (((Pawn) board[row][col]).isPlayerOne) { // Player 1's pawn.
                     System.out.print("P1 ");
-                } else {
+                } else { // Player 2's pawn.
                     System.out.print("P2 ");
                 }
             }
@@ -84,9 +122,14 @@ public class Board {
         System.out.println();
     }
 
-//Wining condition checking 
+    /**
+     * Checks if a pawn has reached the opposite side of the board, meeting the winning condition.
+     *
+     * @param pawn the pawn to check.
+     * @return true if the pawn has won the game, false otherwise.
+     */
     public boolean checkWin(Pawn pawn) {
-        return (pawn.isPlayerOne && pawn.getPosition().getRow() == size - 1)
-                || (!pawn.isPlayerOne && pawn.getPosition().getRow() == 0);
+        return (pawn.isPlayerOne && pawn.getPosition().getRow() == size - 1) // Player 1 reaches the bottom.
+                || (!pawn.isPlayerOne && pawn.getPosition().getRow() == 0); // Player 2 reaches the top.
     }
 }
