@@ -21,15 +21,17 @@ public class BreakthroughGameGUI extends JFrame {
     private GameMenuBar menuBar; // Menu bar for game options.
 
     /**
-     * Constructs the game GUI and initializes the game setup(calling initialize function to setup game).
+     * Constructs the game GUI and initializes the game setup(calling initialize
+     * function to setup game).
      */
     public BreakthroughGameGUI() {
         initializeGame();
     }
 
     /**
-     * Initializes the game by showing rules, getting player names,
-     * selecting board size, and setting up the game board. ----Game ko initialize krwanay ke liay
+     * Initializes the game by showing rules, getting player names, selecting
+     * board size, and setting up the game board. ----Game ko initialize krwanay
+     * ke liay
      */
     private void initializeGame() {
         showGameRules();
@@ -43,7 +45,8 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Displays the game rules in a dialog box to explain how the game works.-----Rules ko Html show krwanay ke liay
+     * Displays the game rules in a dialog box to explain how the game
+     * works.-----Rules ko Html show krwanay ke liay
      */
     private void showGameRules() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
@@ -77,45 +80,31 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Taking input from the players to enter their names. Default names are assigned if input is empty. ----Defualt should be P1, P2
+     * Taking input from the players to enter their names. Default names are
+     * assigned if input is empty. ----Defualt should be P1, P2
      */
     private void getPlayerNames() {
-    // Get Player 1 name
-    do {
         playerOneName = JOptionPane.showInputDialog(this, "Enter name for Player 1 (max 50 characters):", "Player Name", JOptionPane.QUESTION_MESSAGE);
-        if (playerOneName == null) {
-            System.exit(0); // Exit if the user cancels
-        } else if (playerOneName.trim().isEmpty() || playerOneName.length() > 50) {
-            JOptionPane.showMessageDialog(this, "Invalid input. Please enter a valid name (max 50 characters).", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            break; // Valid input, exit the loop
+        if (playerOneName == null || playerOneName.trim().isEmpty()) {
+            playerOneName = "P1";
+        } else if (playerOneName.length() > 50) {
+            JOptionPane.showMessageDialog(this, "Name too long. Defaulting to 'P1'.", "Error", JOptionPane.ERROR_MESSAGE);
+            playerOneName = "P1";
         }
-    } while (true);
 
-    // Get Player 2 name
-    do {
         playerTwoName = JOptionPane.showInputDialog(this, "Enter name for Player 2 (max 50 characters):", "Player Name", JOptionPane.QUESTION_MESSAGE);
-        if (playerTwoName == null) {
-            System.exit(0); 
-        } else if (playerTwoName.trim().isEmpty() || playerTwoName.length() > 50) {
-            JOptionPane.showMessageDialog(this, "Invalid input. Please enter a valid name (max 50 characters).", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            break; 
+        if (playerTwoName == null || playerTwoName.trim().isEmpty()) {
+            playerTwoName = "P2";
+        } else if (playerTwoName.length() > 50) {
+            JOptionPane.showMessageDialog(this, "Name too long. Defaulting to 'P2'.", "Error", JOptionPane.ERROR_MESSAGE);
+            playerTwoName = "P2";
         }
-    } while (true);
-
-    if (playerOneName.trim().isEmpty()) {
-        playerOneName = "P1";
     }
-    if (playerTwoName.trim().isEmpty()) {
-        playerTwoName = "P2";
-    }
-}
-
 
     /**
-     * Displays a dialog box for selecting the board size and returns the selected size.---Making board of desired state, so that taking user input
-     * 
+     * Displays a dialog box for selecting the board size and returns the
+     * selected size.---Making board of desired state, so that taking user input
+     *
      * @return The board size (6, 8, or 10), or -1 if the user cancels.
      */
     public int getBoardSize() {
@@ -149,7 +138,8 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Sets up the game board, GUI components, and the initial game state.----Setting up board
+     * Sets up the game board, GUI components, and the initial game
+     * state.----Setting up board
      */
     private void setupGame() {
         board = new Board(boardSize);
@@ -178,8 +168,9 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Setting up the board panel by adding buttons for each cell and setting initial pawn states.
-     * 
+     * Setting up the board panel by adding buttons for each cell and setting
+     * initial pawn states.
+     *
      * @param boardPanel The panel to configure.
      */
     private void setupBoard(JPanel boardPanel) {
@@ -204,7 +195,8 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Restarts the game by removing all components by using dispose and starting fresh.
+     * Restarts the game by removing all components by using dispose and
+     * starting fresh.
      */
     public void restartGame() {
         dispose();
@@ -214,7 +206,7 @@ public class BreakthroughGameGUI extends JFrame {
 
     /**
      * Changes the board size and resets the game with the new size.
-     * 
+     *
      * @param size The new board size.
      */
     public void changeDifficulty(int size) {
@@ -224,15 +216,16 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Displays a message indicating the winner and offers the option to start a new game.
-     * 
+     * Displays a message indicating the winner and offers the option to start a
+     * new game.
+     *
      * @param winningPlayer The player number (1 or 2) who won.
      */
     public void showWinMessage(int winningPlayer) {
         String winner = (winningPlayer == 1) ? playerOneName : playerTwoName;
         int choice = JOptionPane.showConfirmDialog(this, winner + " wins! Play again?", "Game Over", JOptionPane.YES_NO_OPTION);
 
-        if (choice == JOptionPane.YES_OPTION) {            
+        if (choice == JOptionPane.YES_OPTION) {
             restartGame();
         } else {
             dispose();
