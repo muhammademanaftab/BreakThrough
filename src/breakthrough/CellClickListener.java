@@ -1,6 +1,6 @@
 /**
  * The CellClickListener class handles user clicks on the game board cells.
- * It determines the player's intent, such as selecting a pawn or moving it,
+ * It determines the player's descision, such as selecting a pawn or moving it,
  * and interacts with the game logic to perform the corresponding actions.
  * 
  * This listener ensures that moves are valid, updates the game board, and
@@ -20,7 +20,7 @@ public class CellClickListener implements ActionListener {
     private BreakthroughGameGUI gameGUI; // The GUI for updating the game display and status.
 
     /**
-     * Creates a CellClickListener for a specific cell on the board.
+     * Creating  a CellClickListener for a specific cell on the board.
      * 
      * @param row The row index of the cell this listener is attached to.
      * @param col The column index of the cell this listener is attached to.
@@ -48,7 +48,7 @@ public class CellClickListener implements ActionListener {
         JLabel statusLabel = gameGUI.getStatusLabel();
         boolean isPlayerOneTurn = gameGUI.isPlayerOneTurn();
 
-        // If no pawn is selected, select a pawn from the clicked cell
+        // If no pawn is selected, select a pawn from the clicked cell --- Agar pawn select nai hwua to kia krna ha
         if (selectedPosition == null) {
             Doll selectedDoll = board.getBoard()[row][col];
             if (selectedDoll instanceof Pawn && ((Pawn) selectedDoll).isPlayerOne == isPlayerOneTurn) {
@@ -56,7 +56,7 @@ public class CellClickListener implements ActionListener {
                 statusLabel.setText("Select a destination for Player " + (isPlayerOneTurn ? "1" : "2"));
             }
         } 
-        // If a pawn is already selected, attempt to move it
+        // If a pawn is already selected, attempt to move it,,ahgar select hogya to baad ak decision
         else {
             Position newPosition = new Position(row, col);
             Doll selectedDoll = board.getBoard()[selectedPosition.getRow()][selectedPosition.getColumn()];
@@ -64,22 +64,17 @@ public class CellClickListener implements ActionListener {
             if (selectedDoll instanceof Pawn) {
                 Pawn selectedPawn = (Pawn) selectedDoll;
                 if (board.movePawn(selectedPawn, newPosition)) {
-                    // Update the game display after a valid move
                     gameGUI.updateBoardDisplay();
                     
-                    // Check for a winner after the move
                     if (board.checkWin(selectedPawn)) {
                         gameGUI.showWinMessage(isPlayerOneTurn ? 1 : 2);
                     } else {
-                        // Toggle the turn if the game hasn't ended
                         gameGUI.toggleTurn();
                     }
                 } else {
-                    // Invalid move message
                     statusLabel.setText("Invalid move. Try again.");
                 }
             }
-            // Clear the selected position after processing
             gameGUI.setSelectedPosition(null);
         }
     }

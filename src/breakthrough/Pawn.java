@@ -2,7 +2,6 @@
  * The Pawn class represents a game piece in the Breakthrough game.
  * Each pawn belongs to either Player 1 or Player 2 and can move or capture
  * based on specific rules.
- * 
  * Pawns move one step forward or diagonally forward, and they can capture
  * opponent pawns diagonally forward.
  */
@@ -33,16 +32,15 @@ public class Pawn extends Doll {
      */
     @Override
     public boolean canMove(Position newPosition) {
-        if (isCaptured) return false; // A captured pawn cannot move.
+        if (isCaptured) return false; 
 
         int rowDiff = newPosition.getRow() - position.getRow();
         int colDiff = Math.abs(newPosition.getColumn() - position.getColumn());
 
-        // Check if the move is valid for Player 1 or Player 2.
         if (isPlayerOne) {
-            return (rowDiff == 1 && colDiff <= 1); // Player 1 moves forward.
+            return (rowDiff == 1 && colDiff <= 1); 
         } else {
-            return (rowDiff == -1 && colDiff <= 1); // Player 2 moves backward (towards their goal).
+            return (rowDiff == -1 && colDiff <= 1); 
         }
     }
 

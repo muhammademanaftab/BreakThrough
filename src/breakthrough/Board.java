@@ -8,10 +8,10 @@ package breakthrough;
 public class Board {
 
     private int size; // The size of the board (number of rows and columns).
-    private Doll[][] board; // A 2D array representing the board with pawns.
+    private Doll[][] board; // A 2D array representing the board with pawns .
 
     /**
-     * Retrieves the current state of the board as a 2D array of Dolls.
+     * Gets the current state of the board as a 2D array of Dolls.
      *
      * @return the board grid containing all pawns.
      */
@@ -23,7 +23,7 @@ public class Board {
      * Creates a new game board of the given size and initializes it.
      * Pawns are placed in their starting positions for both players.
      *
-     * @param size the size of the board (e.g., 8 for an 8x8 board).
+     * @param size the size of the board (e.g... 8 for an 8x8 board).
      */
     public Board(int size) {
         this.size = size;
@@ -49,10 +49,10 @@ public class Board {
 
     /**
      * Checks if a pawn's move to a new position is valid.
-     * It ensures the new position is within the board's bounds and checks if the pawn's movement rules are followed.
+     * It ensures the new position is within the bounds of board or not and checks if the pawns movement rules are followed.
      *
      * @param pawn        the pawn to be moved.
-     * @param newPosition the position where the pawn intends to move.
+     * @param newPosition the position where the pawn is going to move.
      * @return true if the move is valid, false otherwise.
      */
     private boolean isMoveValid(Pawn pawn, Position newPosition) {
@@ -105,6 +105,7 @@ public class Board {
      * Displays the board in the console for debugging purposes.
      * Player 1's pawns are shown as "P1" and Player 2's pawns as "P2".
      * Empty cells are displayed as "__".
+     * This is for debugging purposes, first trying to test in console then will develop its UI.
      */
     public void displayBoard() {
         for (int row = 0; row < size; row++) {

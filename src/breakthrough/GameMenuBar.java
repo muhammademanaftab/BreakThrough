@@ -1,7 +1,7 @@
 /**
  * The GameMenuBar class represents the menu bar in the Breakthrough game GUI.
  * It provides options for restarting the game, exiting the application, 
- * and changing the game board's difficulty level.
+ * and changing the game board's difficulty level.----- is class ka use yeh ha saray menu options bnanany ke liay.
  * 
  * This class interacts with the main game GUI (`BreakthroughGameGUI`) to apply user actions.
  */
@@ -19,7 +19,7 @@ public class GameMenuBar extends JMenuBar {
     private final BreakthroughGameGUI gameGUI; // Reference to the main game GUI.
 
     /**
-     * Creates the menu bar with game options such as restart, exit, and difficulty level.
+     * Creating the menu bar with game options such as restart, exit, and difficulty level.
      * 
      * @param gameGUI The main game GUI to interact with for applying menu actions.
      */
@@ -28,12 +28,10 @@ public class GameMenuBar extends JMenuBar {
         
         JMenu gameMenu = new JMenu("Game");
 
-        // Restart menu item
         restartItem = new JMenuItem("Restart");
         restartItem.addActionListener(e -> gameGUI.restartGame());
         gameMenu.add(restartItem);
 
-        // Exit menu item
         exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(e -> System.exit(0));
         gameMenu.add(exitItem);
@@ -41,7 +39,6 @@ public class GameMenuBar extends JMenuBar {
         JMenu difficultyMenu = new JMenu("Change Difficulty");
         ButtonGroup difficultyGroup = new ButtonGroup();
 
-        // Radio buttons for difficulty levels
         size6x6 = new JRadioButtonMenuItem("6x6");
         size6x6.addActionListener(e -> promptChangeDifficulty(6));
         difficultyGroup.add(size6x6);
@@ -57,13 +54,13 @@ public class GameMenuBar extends JMenuBar {
         difficultyGroup.add(size10x10);
         difficultyMenu.add(size10x10);
 
-        // Add menus to the menu bar
         add(gameMenu);
         add(difficultyMenu);
     }
 
     /**
      * Prompts the user to confirm the board size change and applies the new size if confirmed.
+     * --------agar use board ka size change krnaa chahta ha to phele os se confimration lena ha yeh oska box ha
      * 
      * @param newSize The new board size selected by the user (6, 8, or 10).
      */
@@ -85,6 +82,7 @@ public class GameMenuBar extends JMenuBar {
     /**
      * Updates the selection in the difficulty menu based on the current board size.
      * 
+     * ---Board ka szie update krne liay agar confirmaiton mil gya ha to
      * @param boardSize The current size of the game board.
      */
     public void updateDifficultySelection(int boardSize) {

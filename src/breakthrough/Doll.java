@@ -9,7 +9,7 @@
 package breakthrough;
 
 public abstract class Doll {
-    protected Position position; // The current position of the game piece on the board.
+    protected Position position; // The current position of the game piece on the board. ---sabsi pehli condition doll kee
     protected boolean isCaptured; // Indicates whether this piece has been captured.
 
     /**
@@ -20,7 +20,7 @@ public abstract class Doll {
      */
     public Doll(Position position) {
         this.position = position;
-        this.isCaptured = false; // New pieces are not captured by default.
+        this.isCaptured = false; 
     }
 
     /**
@@ -35,7 +35,7 @@ public abstract class Doll {
     /**
      * Updates the position of this game piece to a new position.
      * 
-     * @param newPosition The new position to move the game piece to.
+     * @param newPosition The new position to move the game piece to new destinaiton.
      */
     public void setPosition(Position newPosition) {
         this.position = newPosition;
@@ -44,7 +44,7 @@ public abstract class Doll {
     /**
      * Checks if this game piece has been captured.
      * 
-     * @return True if the piece is captured, false otherwise.
+     * @return True if the piece is captured, or otherwise false .
      */
     public boolean isCaptured() {
         return isCaptured;
@@ -53,7 +53,7 @@ public abstract class Doll {
     /**
      * Determines if this game piece can capture another piece
      * located at a specific position. This method must be implemented
-     * by subclasses with specific capture logic.
+     * by subclasses with specific capture logic.---yeh btayga ke kia pawn ko pakrha ja skta ha nai decision krge 
      * 
      * @param opponentPosition The position of the opponent's game piece.
      * @return True if the capture is allowed, false otherwise.
@@ -62,7 +62,7 @@ public abstract class Doll {
 
     /**
      * Determines if this game piece can move to a specific position.
-     * This method must be implemented by subclasses with specific movement logic.
+     * This method must be implemented by subclasses with specific movement logic.-- yeh btayga pawn move hoskta ha ya ya nai
      * 
      * @param newPosition The position to move the game piece to.
      * @return True if the move is allowed, false otherwise.

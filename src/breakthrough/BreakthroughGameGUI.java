@@ -10,18 +10,18 @@ import java.awt.*;
 
 public class BreakthroughGameGUI extends JFrame {
 
-    private int boardSize; // Size of the board (e.g., 6x6, 8x8, 10x10).
+    private int boardSize; // Size of the board (e.g.... 6x6, 8x8, 10x10).
     private JButton[][] boardButtons; // Buttons representing each cell on the board.
     private Board board; // The game board object that handles game logic.
     private boolean isPlayerOneTurn = true; // Tracks whose turn it is (Player 1 starts first).
-    private JLabel statusLabel; // Displays the current game status (e.g., whose turn it is).
+    private JLabel statusLabel; // Displaying the current game status (e.g... whose turn it is).
     private Position selectedPosition = null; // The currently selected position on the board.
     private String playerOneName; // Name of Player 1.
     private String playerTwoName; // Name of Player 2.
     private GameMenuBar menuBar; // Menu bar for game options.
 
     /**
-     * Constructs the game GUI and initializes the game setup.
+     * Constructs the game GUI and initializes the game setup(calling initialize function to setup game).
      */
     public BreakthroughGameGUI() {
         initializeGame();
@@ -29,7 +29,7 @@ public class BreakthroughGameGUI extends JFrame {
 
     /**
      * Initializes the game by showing rules, getting player names,
-     * selecting board size, and setting up the game board.
+     * selecting board size, and setting up the game board. ----Game ko initialize krwanay ke liay
      */
     private void initializeGame() {
         showGameRules();
@@ -43,7 +43,7 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Displays the game rules in a dialog box to explain how the game works.
+     * Displays the game rules in a dialog box to explain how the game works.-----Rules ko Html show krwanay ke liay
      */
     private void showGameRules() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
@@ -77,7 +77,7 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Prompts the players to enter their names. Default names are assigned if input is empty.
+     * Taking input from the players to enter their names. Default names are assigned if input is empty. ----Defualt should be P1, P2
      */
     private void getPlayerNames() {
         playerOneName = JOptionPane.showInputDialog(this, "Enter name for Player 1:", "Player Name", JOptionPane.QUESTION_MESSAGE);
@@ -96,7 +96,7 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Displays a dialog box for selecting the board size and returns the selected size.
+     * Displays a dialog box for selecting the board size and returns the selected size.---Making board of desired state, so that taking user input
      * 
      * @return The board size (6, 8, or 10), or -1 if the user cancels.
      */
@@ -131,7 +131,7 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Sets up the game board, GUI components, and the initial game state.
+     * Sets up the game board, GUI components, and the initial game state.----Setting up board
      */
     private void setupGame() {
         board = new Board(boardSize);
@@ -160,7 +160,7 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Configures the board panel by adding buttons for each cell and setting initial pawn states.
+     * Setting up the board panel by adding buttons for each cell and setting initial pawn states.
      * 
      * @param boardPanel The panel to configure.
      */
@@ -186,12 +186,12 @@ public class BreakthroughGameGUI extends JFrame {
     }
 
     /**
-     * Restarts the game by reinitializing all components and starting fresh.
+     * Restarts the game by removing all components by using dispose and starting fresh.
      */
     public void restartGame() {
-        getContentPane().removeAll();
-        setJMenuBar(null);
-        initializeGame();
+        dispose();
+        BreakthroughGameGUI newGame = new BreakthroughGameGUI();
+        newGame.setVisible(true);
     }
 
     /**
@@ -214,17 +214,15 @@ public class BreakthroughGameGUI extends JFrame {
         String winner = (winningPlayer == 1) ? playerOneName : playerTwoName;
         int choice = JOptionPane.showConfirmDialog(this, winner + " wins! Play again?", "Game Over", JOptionPane.YES_NO_OPTION);
 
-        if (choice == JOptionPane.YES_OPTION) {
-            dispose();
-            BreakthroughGameGUI newGame = new BreakthroughGameGUI();
-            newGame.setVisible(true);
+        if (choice == JOptionPane.YES_OPTION) {            
+            restartGame();
         } else {
             dispose();
         }
     }
 
     /**
-     * Updates the game board's display to reflect the current game state.
+     * Updates the game board's display to show the current game state.
      */
     public void updateBoardDisplay() {
         for (int row = 0; row < boardSize; row++) {

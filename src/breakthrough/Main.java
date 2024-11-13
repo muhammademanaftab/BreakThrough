@@ -2,7 +2,6 @@
  * The Main class serves as the entry point for the Breakthrough game.
  * It initializes the graphical user interface (GUI) for the game and
  * starts the application.
- * 
  * The commented-out section provides an alternative, text-based way to
  * play the game using the console. This is useful for debugging or as
  * a simple fallback for environments without GUI support.
@@ -19,18 +18,17 @@ public class Main {
      * @param args Command-line arguments (not used).
      */
     public static void main(String[] args) {
-        // Launch the GUI on the Event Dispatch Thread (EDT)
         SwingUtilities.invokeLater(() -> {
-            BreakthroughGameGUI gameGUI = new BreakthroughGameGUI(); // Create the game GUI
-            gameGUI.setVisible(true); // Make the GUI visible
+            BreakthroughGameGUI gameGUI = new BreakthroughGameGUI(); 
+            gameGUI.setVisible(true); 
         });    
     }
 }
 
 /*
- * The following commented-out code provides a console-based version of the Breakthrough game.
+ * The commented-out code provides a console-based version of the Breakthrough game.
  * It is left here for debugging purposes or for running the game in environments without a GUI.
- *
+ *-----Debugging ko b define krna ha for future easy use.
  * The console version allows players to input their moves manually by entering row and column values.
  * The game state is printed after each move, and the program determines the winner when the game ends.
  * Uncomment the code below if you want to play the game in text mode.

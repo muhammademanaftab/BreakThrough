@@ -2,6 +2,7 @@
  * The Position class represents a specific location on the game board
  * using row and column coordinates.
  * 
+ * 
  * This class helps to track where a pawn or any other object is located
  * on the board and provides methods to retrieve and compare positions.
  */
@@ -14,8 +15,8 @@ public class Position {
     /**
      * Creates a new Position with the specified row and column.
      * 
-     * @param row The row number of the position (e.g., 0 for the first row).
-     * @param column The column number of the position (e.g., 0 for the first column).
+     * @param row The row number of the position (e.g... 0 for the first row).
+     * @param column The column number of the position (e.g.. 0 for the first column).
      */
     public Position(int row, int column) {
         this.row = row;
@@ -43,7 +44,7 @@ public class Position {
     /**
      * Checks if this position is equal to another position.
      * Two positions are considered equal if they have the same row and column.
-     * 
+     * Defining equals for pawn class.
      * @param other The position to compare with this position.
      * @return True if the positions have the same row and column, false otherwise.
      */
